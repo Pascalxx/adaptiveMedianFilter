@@ -6,15 +6,18 @@ def salt_pepper_noise(image, fraction):
     img = np.copy(image)
     row, column = img.shape
     w = 0
+    b = 0
     for i in range(0, row):
         for j in range(0, column):
             if (np.random.randint(100) < fraction):
                 img[i, j] = 255
                 w = w + 1
-            elif (np.random.randint(100) < fraction):
+            if (np.random.randint(100) < fraction):
                 img[i, j] = 0
+                b = b + 1
 
     print(w)
+    print(b)
     return img
 
 
@@ -26,4 +29,3 @@ cv2.imshow('Salt & Pepper Noise', noisy)
 
 cv2.waitKey(0)
 cv2.destroyAllWindows()
-print(np.random.randint(100))
