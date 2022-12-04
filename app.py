@@ -22,10 +22,11 @@ def salt_pepper_noise(image, fraction):
 
 
 # # # # # # # # # # #
-if __name__ == '__main__': img = cv2.imread('imgData/lena_std.jpg', cv2.IMREAD_GRAYSCALE)
-fraction = 25
-noisy = salt_pepper_noise(img, fraction)
-cv2.imshow('Salt & Pepper Noise', noisy)
+if __name__ == '__main__':
+    img = cv2.imread('imgData/lena_std.jpg', cv2.IMREAD_GRAYSCALE)
+    fraction = 25
+    noisy = salt_pepper_noise(img, fraction)
+    cv2.imshow('Salt & Pepper Noise', noisy)
 
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
