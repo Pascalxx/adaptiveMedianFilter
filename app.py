@@ -4,6 +4,7 @@ import numpy as np
 
 # 添加胡椒鹽雜訊
 def salt_pepper_noise(image, fraction):
+    print('Add Salt & Pepper Noise running...')
     img = np.copy(image)
     row, column = img.shape
     w = 0
@@ -16,7 +17,7 @@ def salt_pepper_noise(image, fraction):
             if np.random.randint(100) < fraction:
                 img[i, j] = 0
                 b = b + 1
-
+    print('Add Salt & Pepper Noise done!')
     print(w)
     print(b)
     return img
@@ -33,8 +34,8 @@ def calculate_median(array):
 def amf_level_a(img, x, y, s_xy=1, s_max=3):
     edge_x_st = x - s_xy if x >= s_xy else 0
     edge_y_st = y - s_xy if y >= s_xy else 0
-    edge_x_ed = s_xy * 2 + 1 if s_xy * 2 + 1 <= img[0].shape else img[0].shape
-    edge_y_ed = s_xy * 2 + 1 if s_xy * 2 + 1 <= img[0].shape else img[1].shape
+    edge_x_ed = x + s_xy + 1 if x + s_xy + 1 < img.shape[0] else img.shape[0]
+    edge_y_ed = y + s_xy + 1 if y + s_xy + 1 < img.shape[1] else img.shape[1]
 
     filter_window = img[edge_x_st: edge_x_ed, edge_y_st: edge_y_ed]
 
@@ -44,22 +45,43 @@ def amf_level_a(img, x, y, s_xy=1, s_max=3):
     z_max = np.max(target)
     z_med = calculate_median(target)
 
-    return 0
+    if z_min < z_med < z_max:
+        return amf_level_b(z_min, z_med, z_max, z_xy)
+
+    else:
+        s_xy += 1
+        if (s_xy <= s_max):
+            return amf_level_a(img, x, y, s_xy)
+        else:
+            return z_med
+
+
+# B部分
+def amf_level_b(z_min, z_med, z_max, z_xy):
+    if z_min < z_xy < z_max:
+        return z_xy
+    else:
+        return z_med
 
 
 # # # # # # # # # # #
 if __name__ == '__main__':
     img_o = cv2.imread('imgData/lena_std.jpg', cv2.IMREAD_GRAYSCALE)
+    cv2.imshow('img_o', img_o)
     fraction = 25
     noisy = salt_pepper_noise(img_o, fraction)
+    out_img = np.empty([img_o.shape[0], img_o.shape[1]])
+    cv2.imshow('Salt & Pepper Noise', noisy)
 
     # Adaptive Median Filter Start
+    print('Adaptive Median Filter running...')
     x_length, y_length = img_o.shape
     for i in range(0, x_length):
         for j in range(0, y_length):
-            amf_level_a(img_o, i, j)
+            out_img[i][j] = amf_level_a(noisy, i, j) / 255
 
-    cv2.imshow('Salt & Pepper Noise', noisy)
+    print('Adaptive Median Filter done!')
+    cv2.imshow('result', out_img)
 
     cv2.waitKey(0)
     cv2.destroyAllWindows()
