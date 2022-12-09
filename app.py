@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 
 
+# 添加胡椒鹽雜訊
 def salt_pepper_noise(image, fraction):
     img = np.copy(image)
     row, column = img.shape
@@ -21,11 +22,41 @@ def salt_pepper_noise(image, fraction):
     return img
 
 
+# 找出中值
+def calculate_median(array):
+    sorted_array = np.sort(array)
+    median = sorted_array[len(array) // 2]
+    return median
+
+
+# A部分
+def amf_level_a(img, x, y, s_xy=1, s_max=3):
+    edge_x_st = x - s_xy if x >= s_xy else 0
+    edge_y_st = y - s_xy if y >= s_xy else 0
+
+    filter_window = img[edge_x_st: s_xy * 2 + 1, edge_y_st: s_xy * 2 + 1]
+
+    target = filter_window.reshape(-1)
+    z_xy = img[x, y]
+    z_min = np.min(target)
+    z_max = np.max(target)
+    z_med = calculate_median(target)
+
+    return 0
+
+
 # # # # # # # # # # #
 if __name__ == '__main__':
-    img = cv2.imread('imgData/lena_std.jpg', cv2.IMREAD_GRAYSCALE)
+    img_o = cv2.imread('imgData/lena_std.jpg', cv2.IMREAD_GRAYSCALE)
     fraction = 25
-    noisy = salt_pepper_noise(img, fraction)
+    noisy = salt_pepper_noise(img_o, fraction)
+
+    # Adaptive Median Filter Start
+    x_length, y_length = img_o.shape
+    for i in range(0, x_length):
+        for j in range(0, y_length):
+            amf_level_a(img_o, i, j)
+
     cv2.imshow('Salt & Pepper Noise', noisy)
 
     cv2.waitKey(0)
