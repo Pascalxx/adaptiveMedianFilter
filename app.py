@@ -20,8 +20,8 @@ def salt_pepper_noise(image, fraction):
                 b = b + 1
 
     print('Add Salt & Pepper Noise done!')
-    print(w)
-    print(b)
+    print('Salt : ' + str(w))
+    print('Pepper : ' + str(b))
     return img
 
 
