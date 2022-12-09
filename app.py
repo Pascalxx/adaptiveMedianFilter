@@ -9,10 +9,10 @@ def salt_pepper_noise(image, fraction):
     b = 0
     for i in range(0, row):
         for j in range(0, column):
-            if (np.random.randint(100) < fraction):
+            if np.random.randint(100) < fraction:
                 img[i, j] = 255
                 w = w + 1
-            if (np.random.randint(100) < fraction):
+            if np.random.randint(100) < fraction:
                 img[i, j] = 0
                 b = b + 1
 
