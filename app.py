@@ -33,8 +33,10 @@ def calculate_median(array):
 def amf_level_a(img, x, y, s_xy=1, s_max=3):
     edge_x_st = x - s_xy if x >= s_xy else 0
     edge_y_st = y - s_xy if y >= s_xy else 0
+    edge_x_ed = s_xy * 2 + 1 if s_xy * 2 + 1 <= img[0].shape else img[0].shape
+    edge_y_ed = s_xy * 2 + 1 if s_xy * 2 + 1 <= img[0].shape else img[1].shape
 
-    filter_window = img[edge_x_st: s_xy * 2 + 1, edge_y_st: s_xy * 2 + 1]
+    filter_window = img[edge_x_st: edge_x_ed, edge_y_st: edge_y_ed]
 
     target = filter_window.reshape(-1)
     z_xy = img[x, y]
